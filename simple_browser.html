@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Search</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #111318; color: #eee; font: 16px system-ui, sans-serif; }
+  main { width: min(620px, calc(100% - 32px)); }
+  form { display: flex; gap: 10px; padding: 8px; border: 1px solid #343741; border-radius: 14px; background: #1b1e25; }
+  input { flex: 1; min-width: 0; padding: 12px 10px; border: 0; outline: 0; background: transparent; color: inherit; font-size: 16px; }
+  button { border: 0; border-radius: 10px; padding: 0 16px; background: #e7e9ee; color: #15171b; font-weight: 600; cursor: pointer; }
+  button:hover { background: #fff; }
+  .hint { margin-top: 12px; color: #858995; text-align: center; font-size: 13px; }
+</style>
+</head>
+<body>
+<main>
+  <form id="searchForm">
+    <input id="query" autocomplete="off" autofocus placeholder="Search or enter a website" aria-label="Search or enter a website">
+    <button type="submit">Go</button>
+  </form>
+  <div class="hint">Enter a search or website address</div>
+</main>
+<script>
+  const form = document.getElementById('searchForm');
+  const input = document.getElementById('query');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const value = input.value.trim();
+    if (!value) return;
+    const looksLikeUrl = /^(https?:\/\/)?([\w-]+\.)+[a-z]{2,}([/:?#].*)?$/i.test(value) || /^localhost(:\d+)?/i.test(value);
+    const destination = looksLikeUrl
+      ? (value.startsWith('http://') || value.startsWith('https://') ? value : 'https://' + value)
+      : 'https://www.google.com/search?q=' + encodeURIComponent(value);
+    const tab = window.open('about:blank', '_blank');
+    if (tab) tab.location.href = destination;
+    else window.location.href = destination;
+  });
+</script>
+</body>
+</html>
